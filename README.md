@@ -1,6 +1,5 @@
 # android_lame
-A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on [this](http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090) tutorial with some small changes to support newer android versions:
-. 
+A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on [this](http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090) tutorial with some small changes to support newer android versions. 
 #Installation
 ## Android Studio
 Copy the .so file from releases to your source->main->jniLibs, if jniLibs does not exist create it.
@@ -29,6 +28,7 @@ Some definitions:
 ```
 To initialize lame and start recording use:
 ```java
+        public void start(){
         mRawFile = new File(...)
         mEncodedFile = new File(...)
         initRecorder();
@@ -37,6 +37,7 @@ To initialize lame and start recording use:
         mRecorder.startRecording();
         
         startBufferedWrite(mRawFile);
+        }
         
         private void initRecorder() {
         int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
@@ -49,6 +50,7 @@ To initialize lame and start recording use:
 ```
 Finally encode the file and release everything:
 ```java
+        public void release(){
         File mEncodedFile = new File(mFileName);
         mRawFile = mCacheFile.getMergedFile();
         int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
@@ -58,8 +60,9 @@ Finally encode the file and release everything:
             
         mRecorder.release();
         destroyEncoder();
+        }
         
-            private void startBufferedWrite(final File file) {
+        private void startBufferedWrite(final File file) {
         new Thread(new Runnable() {
             @Override
             public void run() {
