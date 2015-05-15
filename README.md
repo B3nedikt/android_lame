@@ -1,11 +1,11 @@
 # android_lame
 A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on [this](http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090) tutorial with some small changes to support newer android versions. 
-#Installation
-## Android Studio
+##Installation
+### Android Studio
 Copy the .so file from releases to your source->main->jniLibs folder in your android studio project, if the jniLibs folder does not exist create it.
-## Build
+### Build
 Simply copy everything from this repository to the source->main->jni folder in your project and run the ndk-build script from the android NDK, as described in the tutorial linked above.
-# Usage
+## Usage
 Some definitions:
 ```java
 static {
@@ -100,5 +100,5 @@ public void release(){
     destroyEncoder();
 }
 ```
-#License
+##License
 Lame is licensed under the LGPL: (http://lame.sourceforge.net/license.txt)
