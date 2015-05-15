@@ -8,99 +8,98 @@ Simply copy everything from this repository to source->main->jni and run the ndk
 # Usage
 Some definitions:
 ```java
-    static {
-        System.loadLibrary("mp3lame");
-    }
+static {
+    System.loadLibrary("mp3lame");
+}
     
-    private native int encodeFile(String sourcePath, String targetPath);
+private native int encodeFile(String sourcePath, String targetPath);
 
-    public static final int NUM_CHANNELS = 1;
-    public static final int SAMPLE_RATE = 16000;
-    public static final int BITRATE = 128;
-    public static final int MODE = 1;
-    public static final int QUALITY = 2;
+public static final int NUM_CHANNELS = 1;
+public static final int SAMPLE_RATE = 16000;
+public static final int BITRATE = 128;
+public static final int MODE = 1;
+public static final int QUALITY = 2;
     
-    private AudioRecord mRecorder;
-    private short[] mBuffer;
+private AudioRecord mRecorder;
+private short[] mBuffer;
     
-    private File mRawFile;
-    private File mEncodedFile;
+private File mRawFile;
+private File mEncodedFile;
 ```
 To initialize lame and start recording use:
 ```java
-        public void start(){
-        mRawFile = new File(...)
-        mEncodedFile = new File(...)
-        initRecorder();
-        initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
+public void start(){
+    mRawFile = new File(...)
+    mEncodedFile = new File(...)
+    initRecorder();
+    initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
         
-        mRecorder.startRecording();
+    mRecorder.startRecording();
         
-        startBufferedWrite(mRawFile);
-        }
+    startBufferedWrite(mRawFile);
+}
         
-        private void initRecorder() {
-        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        mBuffer = new short[bufferSize];
-        mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, bufferSize);
-    }
+private void initRecorder() {
+    int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT);
+    mBuffer = new short[bufferSize];
+    mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+}
         
 ```
 Finally encode the file and release everything:
 ```java
-        public void release(){
-        File mEncodedFile = new File(mFileName);
-        mRawFile = mCacheFile.getMergedFile();
-        int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
-        if (result == 0) {
-            Log.d("NativeRecorder", "Encoded to " + mEncodedFile.getName());
-        }
-            
-        mRecorder.release();
-        destroyEncoder();
-        }
+public void release(){
+    File mEncodedFile = new File(mFileName);
+    mRawFile = mCacheFile.getMergedFile();
+    int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
+    if (result == 0) {
+        Log.d("NativeRecorder", "Encoded to " + mEncodedFile.getName());
+    }
         
-        private void startBufferedWrite(final File file) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                DataOutputStream output = null;
-                try {
-                    output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-                    while (mIsRecording) {
-                        double sum = 0;
-                        int readSize = mRecorder.read(mBuffer, 0, mBuffer.length);
-                        for (int i = 0; i < readSize; i++) {
-                            output.writeShort(mBuffer[i]);
-                            sum += mBuffer[i] * mBuffer[i];
-                        }
-
-                        if (readSize > 0) {
-                            mAmplitude = (int) (sum / readSize);
-                        }
+    mRecorder.release();
+    destroyEncoder();
+}
+        
+private void startBufferedWrite(final File file) {
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            DataOutputStream output = null;
+            try {
+                output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+                while (mIsRecording) {
+                    double sum = 0;
+                    int readSize = mRecorder.read(mBuffer, 0, mBuffer.length);
+                    for (int i = 0; i < readSize; i++) {
+                        output.writeShort(mBuffer[i]);
+                        sum += mBuffer[i] * mBuffer[i];
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (output != null) {
+                    if (readSize > 0) {
+                        mAmplitude = (int) (sum / readSize);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (output != null) {
+                    try {
+                        output.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
                         try {
-                            output.flush();
+                            output.close();
                         } catch (IOException e) {
                             e.printStackTrace();
-                        } finally {
-                            try {
-                                output.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
                 }
             }
-        }).start();
-    }
+        }
+    }).start();
+}
     
 ```
 #License
