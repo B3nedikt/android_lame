@@ -2,9 +2,9 @@
 A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on [this](http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090) tutorial with some small changes to support newer android versions. 
 #Installation
 ## Android Studio
-Copy the .so file from releases to your source->main->jniLibs, if jniLibs does not exist create it.
+Copy the .so file from releases to your source->main->jniLibs folder in your android studio project, if the jniLibs folder does not exist create it.
 ## Build
-Simply copy everything from this repository to source->main->jni and run the ndk-build script, as described in the tutorial above.
+Simply copy everything from this repository to the source->main->jni folder in your project and run the ndk-build script from the android NDK, as described in the tutorial linked above.
 # Usage
 Some definitions:
 ```java
