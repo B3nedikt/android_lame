@@ -1,6 +1,6 @@
 # android_lame
-A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on this tutorial with some small changes to support newer android versions:
-(http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090). 
+A Small wrapper around the famous lame libary (http://lame.sourceforge.net/) for android based mostly on [this](http://developer.samsung.com/technical-doc/view.do;jsessionid=hlCGVWCRy8pwjsY5f4P8KLzPmr6fCZNvQhxGndXwRLTywbJT7vWX!404960129?v=T000000090) tutorial with some small changes to support newer android versions:
+. 
 #Installation
 ## Android Studio
 Copy the .so file from releases to your source->main->jniLibs, if jniLibs does not exist create it.
