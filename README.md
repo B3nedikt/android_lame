@@ -46,22 +46,7 @@ private void initRecorder() {
     mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT, bufferSize);
 }
-        
-```
-Finally encode the file and release everything:
-```java
-public void release(){
-    File mEncodedFile = new File(mFileName);
-    mRawFile = mCacheFile.getMergedFile();
-    int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
-    if (result == 0) {
-        Log.d("NativeRecorder", "Encoded to " + mEncodedFile.getName());
-    }
-        
-    mRecorder.release();
-    destroyEncoder();
-}
-        
+
 private void startBufferedWrite(final File file) {
     new Thread(new Runnable() {
         @Override
@@ -100,7 +85,20 @@ private void startBufferedWrite(final File file) {
         }
     }).start();
 }
-    
+```
+When you want to stop recording encode the file and perform some cleanup:
+```java
+public void release(){
+    File mEncodedFile = new File(mFileName);
+    mRawFile = mCacheFile.getMergedFile();
+    int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
+    if (result == 0) {
+        Log.d("NativeRecorder", "Encoded to " + mEncodedFile.getName());
+    }
+        
+    mRecorder.release();
+    destroyEncoder();
+}
 ```
 #License
 Lame is licensed under the LGPL: (http://lame.sourceforge.net/license.txt)
